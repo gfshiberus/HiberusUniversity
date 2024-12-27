@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/CursoIntroduccionSpringCloud/CursoIntroduccionSpringCloud.iml" filepath="$PROJECT_DIR$/CursoIntroduccionSpringCloud/CursoIntroduccionSpringCloud.iml" />
+      <module fileurl="file://$PROJECT_DIR$/CursoIntroduccionSpringCloud/config-server/config-server.iml" filepath="$PROJECT_DIR$/CursoIntroduccionSpringCloud/config-server/config-server.iml" />
+      <module fileurl="file://$PROJECT_DIR$/CursoIntroduccionSpringCloud/eureka-server/eureka-server.iml" filepath="$PROJECT_DIR$/CursoIntroduccionSpringCloud/eureka-server/eureka-server.iml" />
+      <module fileurl="file://$PROJECT_DIR$/CursoIntroduccionSpringCloud/gateway-server/gateway-server.iml" filepath="$PROJECT_DIR$/CursoIntroduccionSpringCloud/gateway-server/gateway-server.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/introSpringCloud-SleuthZipkin.iml" filepath="$PROJECT_DIR$/.idea/introSpringCloud-SleuthZipkin.iml" />
+      <module fileurl="file://$PROJECT_DIR$/CursoIntroduccionSpringCloud/prendas/prendas.iml" filepath="$PROJECT_DIR$/CursoIntroduccionSpringCloud/prendas/prendas.iml" />
+      <module fileurl="file://$PROJECT_DIR$/CursoIntroduccionSpringCloud/usuarios/usuarios.iml" filepath="$PROJECT_DIR$/CursoIntroduccionSpringCloud/usuarios/usuarios.iml" />
+    </modules>
+  </component>
+</project>
