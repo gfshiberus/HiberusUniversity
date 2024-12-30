@@ -5,6 +5,7 @@ import lombok.*;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Builder
 @NoArgsConstructor
@@ -34,5 +35,9 @@ public class Usuario {
 
     public void agregarPizza(Long id){
         pizzasFavoritas.add(id);
+    }
+
+    public boolean eliminarPizza(Long id) {
+        return pizzasFavoritas.remove(id);
     }
 }

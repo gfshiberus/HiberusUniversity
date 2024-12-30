@@ -37,7 +37,7 @@ public class ControladorUsuario {
         return ResponseEntity.status(HttpStatus.CREATED).body(nuevoUsuario); // Código 201
     }
 
-    @PutMapping("/{idUsuario}/marcarPizzaFavorita/{idPizza}")
+    @PutMapping("/{idUsuario}/agregarPizzaFavorita/{idPizza}")
     public ResponseEntity<UsuarioDto> agregarPizzaFavorita(@PathVariable Long idUsuario, @PathVariable Long idPizza) {
         try {
             // Llamar al servicio para agregar la pizza favorita
@@ -65,6 +65,16 @@ public class ControladorUsuario {
     public ResponseEntity<Void> eliminarUsuario(@PathVariable Long id) {
         servicioUsuarios.eliminarUsuario(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{idUsuario}/eliminarPizzaFavoritas/{idPizza}")
+    public ResponseEntity<UsuarioDto> eliminarPizzaFavorita(@PathVariable Long idUsuario, @PathVariable Long idPizza) {
+        try {
+            UsuarioDto usuarioActualizado = servicioUsuarios.eliminarPizzaFavorita(idUsuario, idPizza);
+            return ResponseEntity.ok(usuarioActualizado);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();  // Si la pizza no estaba en las favoritas
+        }
     }
 
 

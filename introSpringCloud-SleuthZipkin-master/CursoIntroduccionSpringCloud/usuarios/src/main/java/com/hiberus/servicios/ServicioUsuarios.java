@@ -20,4 +20,6 @@ public interface ServicioUsuarios {
 
 
     UsuarioDto agregarPizzaFavorita(Long idUsuario, Long idPizza);
+
+    UsuarioDto eliminarPizzaFavorita(Long idUsuario, Long idPizza);
 }

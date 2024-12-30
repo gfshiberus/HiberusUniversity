@@ -1,5 +1,6 @@
 package com.hiberus.servicios.Impl;
 
+import com.hiberus.Mapper.UsuarioMapper;
 import com.hiberus.clientes.ClientePizza;
 import com.hiberus.dto.PizzaDto;
 import com.hiberus.dto.UsuarioDto;
@@ -24,6 +25,7 @@ public class ServicioUsuariosImpl implements ServicioUsuarios {
 
     @Autowired
     private ClientePizza clientePizza;
+
 
     @Override
     public UsuarioDto obtenerUsuarioPorId(Long id) {
@@ -65,6 +67,26 @@ public class ServicioUsuariosImpl implements ServicioUsuarios {
 
         // Agregar la pizza al usuario
         usuario.agregarPizza(idPizza);
+
+        // Guardar al usuario actualizado
+        Usuario usuarioActualizado = repositorioUsuario.save(usuario);
+
+        // Mapear el Usuario actualizado a un UsuarioDto
+        return mapearUsuarioADto(usuarioActualizado);
+    }
+
+    public UsuarioDto eliminarPizzaFavorita(Long idUsuario, Long idPizza) {
+        // Buscar al usuario
+        Usuario usuario = repositorioUsuario.findById(idUsuario)
+                .orElseThrow(() -> new NoSuchElementException("Usuario no encontrado"));
+
+
+        // Eliminar la pizza del usuario
+        boolean eliminado = usuario.eliminarPizza(idPizza);
+
+        if (!eliminado) {
+            throw new NoSuchElementException("La pizza no está en las favoritas del usuario");
+        }
 
         // Guardar al usuario actualizado
         Usuario usuarioActualizado = repositorioUsuario.save(usuario);
