@@ -12,45 +12,59 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping(value = "/usuarios")
 public class ControladorUsuario {
 
     @Autowired
-    ServicioUsuarios servicioUsuarios;
+    private ServicioUsuarios servicioUsuarios;
 
-    @Autowired
-    ServicioPizza servicioPizza;
+    @GetMapping
+    public ResponseEntity<List<UsuarioDto>> obtenerUsuarios() {
+        return ResponseEntity.ok(servicioUsuarios.obtenerUsuarios());
+    }
 
-    @GetMapping(value = "/obtenerUsuarios")
-    public ResponseEntity <List<UsuarioDto>> obtenerUsuarios(){
-        List<UsuarioDto> listaUsuarios = servicioUsuarios.obtenerUsuarios();
-        List<UsuarioDto> listaUsuariosDto = new ArrayList<>();
-        for(UsuarioDto usuario: listaUsuarios){
-            UsuarioDto usuarioDto = UsuarioDto.builder()
-                    .id(usuario.getId())
-                    .nombre(usuario.getNombre())
-                    .build();
-            listaUsuariosDto.add(usuarioDto);
-        }
-            return new ResponseEntity<>(listaUsuariosDto, HttpStatus.OK);
-    }
-    /*
-    @GetMapping(value = "/pizzas/{id}")
-    public ResponseEntity <List<PizzaDto>> obtenerPizzasIdUsuario(@RequestParam Long idUsuario){
-        List<PizzaDto> listaPizzaUsuario = servicioPizza.obtenerPizzasId(idUsuario);
-        return new ResponseEntity<>(listaPizzaUsuario,HttpStatus.OK);
-    }
-    */
     @GetMapping("/{id}")
-    public UsuarioDto obtenerUsuarioConPizzas(@PathVariable Long id) {
-        return servicioUsuarios.obtenerUsuarioConPizzas(id);
+    public ResponseEntity<UsuarioDto> obtenerUsuarioPorId(@PathVariable Long id) {
+        return ResponseEntity.ok(servicioUsuarios.obtenerUsuarioPorId(id));
     }
 
     @PostMapping
-    public UsuarioDto crearUsuario(@RequestBody UsuarioDto usuarioDto) {
-        return servicioUsuarios.crearUsuario(usuarioDto);
+    public ResponseEntity<UsuarioDto> crearUsuario(@RequestBody UsuarioDto usuarioDto) {
+        UsuarioDto nuevoUsuario = servicioUsuarios.crearUsuario(usuarioDto.getId(),usuarioDto.getNombre());
+        return ResponseEntity.status(HttpStatus.CREATED).body(nuevoUsuario); // Código 201
+    }
+
+    @PutMapping("/{idUsuario}/marcarPizzaFavorita/{idPizza}")
+    public ResponseEntity<UsuarioDto> agregarPizzaFavorita(@PathVariable Long idUsuario, @PathVariable Long idPizza) {
+        try {
+            // Llamar al servicio para agregar la pizza favorita
+            UsuarioDto usuarioActualizado = servicioUsuarios.agregarPizzaFavorita(idUsuario, idPizza);
+
+            // Retornar el usuario actualizado con código de estado 200 (OK)
+            return ResponseEntity.ok(usuarioActualizado);
+        } catch (NoSuchElementException e) {
+            // Manejar el caso en que no se encuentre el usuario
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } catch (Exception e) {
+            // Manejar cualquier otro tipo de error
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+
+
+    @PutMapping("/{id}")
+    public ResponseEntity<UsuarioDto> actualizarUsuario(@PathVariable Long id, @RequestBody UsuarioDto usuarioDto) {
+        return ResponseEntity.ok(servicioUsuarios.actualizarUsuario(id, usuarioDto));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> eliminarUsuario(@PathVariable Long id) {
+        servicioUsuarios.eliminarUsuario(id);
+        return ResponseEntity.noContent().build();
     }
 
 

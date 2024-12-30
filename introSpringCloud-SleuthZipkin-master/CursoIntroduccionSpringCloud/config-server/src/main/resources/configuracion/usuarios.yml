@@ -21,7 +21,7 @@ spring:
     console:
       enabled: false
   datasource:
-    url: jdbc:postgresql://localhost:5434/pizzeberus_db
+    url: jdbc:postgresql://localhost:5434/usuarios_db
     username: postgres
     password: secret
   jpa:

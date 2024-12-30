@@ -6,82 +6,100 @@ import com.hiberus.dto.UsuarioDto;
 import com.hiberus.modelos.Usuario;
 import com.hiberus.repositorios.RepositorioUsuario;
 import com.hiberus.servicios.ServicioUsuarios;
+import feign.FeignException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class ServicioUsuariosImpl implements ServicioUsuarios {
-     @Autowired
-    RepositorioUsuario repositorioUsuario;
+    @Autowired
+    private RepositorioUsuario repositorioUsuario;
 
-     @Autowired
-     ClientePizza clientePizza;
-
-     public UsuarioDto crearUsuario(UsuarioDto usuarioDto){
-         Usuario usuario = new Usuario();
-         usuario.setNombre(usuarioDto.getNombre());
-         usuario.setPizzasFavoritas(usuarioDto.getPizzasFavoritas());
-         usuario = repositorioUsuario.save(usuario);
-         return new UsuarioDto(usuario.getId(),usuario.getNombre(),List.of());
-     }
+    @Autowired
+    private ClientePizza clientePizza;
 
     @Override
     public UsuarioDto obtenerUsuarioPorId(Long id) {
+        // Implementación para obtener un usuario por ID
         return null;
     }
 
     @Override
-    public Usuario eliminarUsuario(Long id) {
-        return null;
+    public UsuarioDto crearUsuario(Long idUsuario, String nombre) {
+        // Verificar si ya existe un usuario con el mismo id
+        if (repositorioUsuario.existsById(idUsuario)) {
+            throw new RuntimeException("Ya existe un usuario con el ID proporcionado");
+        }
+
+
+        // Crear un nuevo usuario con el id y nombre proporcionados
+        Usuario usuario = new Usuario();
+        usuario.setId(idUsuario);  // Establecemos el ID recibido
+        usuario.setNombre(nombre);  // Establecemos el nombre recibido
+
+        // Guardamos el usuario
+        usuario = repositorioUsuario.save(usuario);
+
+        // Retornamos el UsuarioDto con los datos del usuario creado
+        return mapearUsuarioADto(usuario);
     }
 
     @Override
-    public Usuario actualizarUsuario(Long id, UsuarioDto usuarioDto) {
+    public UsuarioDto actualizarUsuario(Long id, UsuarioDto usuarioDto) {
+        // Implementación para actualizar el usuario
         return null;
     }
+
+
+    public UsuarioDto agregarPizzaFavorita(Long idUsuario, Long idPizza) {
+        // Buscar al usuario
+        Usuario usuario = repositorioUsuario.findById(idUsuario)
+                .orElseThrow(() -> new NoSuchElementException("Usuario no encontrado"));
+
+        // Agregar la pizza al usuario
+        usuario.agregarPizza(idPizza);
+
+        // Guardar al usuario actualizado
+        Usuario usuarioActualizado = repositorioUsuario.save(usuario);
+
+        // Mapear el Usuario actualizado a un UsuarioDto
+        return mapearUsuarioADto(usuarioActualizado);
+    }
+
+    @Override
+    public void eliminarUsuario(Long id) {
+        if (!repositorioUsuario.existsById(id)) {
+            throw new RuntimeException("Usuario no encontrado");
+        }
+        repositorioUsuario.deleteById(id);
+    }
+
 
     @Override
     public List<UsuarioDto> obtenerUsuarios() {
-        return null;
+        return repositorioUsuario.findAll().stream()
+                .map(usuario -> new UsuarioDto(
+                        usuario.getId(),
+                        usuario.getNombre(),
+                        usuario.getPizzasFavoritas()
+                )).collect(Collectors.toList());
     }
 
-    /*
-    @Override
-    public UsuarioDto obtenerUsuarioPorId(Long id) {
-        Usuario usuario = repositorioUsuario.findById(id)
-                .orElseThrow(()-> new RuntimeException("Usuario no encontrado"));
 
-        List<PizzaDto> nombrePizzasFavoritas = clientePizza.obtenerPizzaPorId(usuario.getPizzasFavoritas());
+    private UsuarioDto mapearUsuarioADto(Usuario usuario) {
+        // Obtener directamente la lista de IDs de pizzas favoritas
+        List<Long> idsPizzasFavoritas = usuario.getPizzasFavoritas() != null
+                ? new ArrayList<>(usuario.getPizzasFavoritas()) // Clonar la lista para evitar mutaciones accidentales
+                : new ArrayList<>();
 
-        return new UsuarioDto(usuario.getId(), usuario.getNombre(), nombrePizzasFavoritas);
-
-    }
-
-    @Override
-    public UsuarioDto actualizarUsuario(Long id, UsuarioDto usuarioDto){
-         Usuario usuario = repositorioUsuario.findBy(id)
-                 .orElseThrow(()-> new RuntimeException("Usuario no encontrado"));
-         usuario.setNombre(usuarioDto.getNombre());
-         usuario.setPizzasFavoritas(usuarioDto.getPizzasFavoritas().stream()
-                 .map(nombrePizza -> ClientePizza.obtenerPizzaPorId(nombrePizza).getId())
-         )
-
-    }
-    */
-    public UsuarioDto obtenerUsuarioConPizzas(Long idUsuario) {
-        Usuario usuario = repositorioUsuario.findById(idUsuario)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-
-        // Obtener detalles de las pizzas favoritas del usuario
-        List<PizzaDto> pizzasFavoritas = usuario.getPizzasFavoritas().stream()
-                .map(clientePizza::obtenerPizzaPorId) // Llama al microservicio pizza-read
-                .collect(Collectors.toList());
-
-        // Retornar el UsuarioDTO con las pizzas favoritas
-        return new UsuarioDto(usuario.getId(), usuario.getNombre(), usuario.getPizzasFavoritas());
+        return new UsuarioDto(usuario.getId(), usuario.getNombre(), idsPizzasFavoritas);
     }
 
 }

@@ -1,3 +1,4 @@
+com\hiberus\Mapper\UsuarioMapper.class
 com\hiberus\clientes\ClientePizza.class
 com\hiberus\modelos\Usuario$UsuarioBuilder.class
 com\hiberus\dto\PizzaDto$PizzaDtoBuilder.class

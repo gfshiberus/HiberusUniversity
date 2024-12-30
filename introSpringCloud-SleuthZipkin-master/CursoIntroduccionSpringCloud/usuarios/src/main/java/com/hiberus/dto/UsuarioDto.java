@@ -1,5 +1,6 @@
 package com.hiberus.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import java.util.List;

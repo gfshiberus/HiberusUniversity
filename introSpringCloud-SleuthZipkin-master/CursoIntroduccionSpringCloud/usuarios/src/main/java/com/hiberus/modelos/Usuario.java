@@ -1,7 +1,9 @@
 package com.hiberus.modelos;
 
+
 import lombok.*;
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Builder
@@ -13,13 +15,24 @@ import java.util.List;
 @Data
 public class Usuario {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
+
     private Long id;
-    @Setter
-    @Column(name = "nombre")
     private String nombre;
-    @Setter
-    @ElementCollection
-    private List<Long> pizzasFavoritas;
+
+    @ElementCollection // Lista de elementos simples (IDs)
+    @CollectionTable(name = "usuario_pizzas", joinColumns = @JoinColumn(name = "usuario_id"))
+    @Column(name = "pizza_id")
+    private List<Long> pizzasFavoritas = new ArrayList<>(); // Lista de IDs de pizzas
+
+    public List<Long> getPizzasFavoritas() {
+        return pizzasFavoritas;
+    }
+
+    public void setPizzasFavoritas(List<Long> pizzasFavoritas) {
+        this.pizzasFavoritas = pizzasFavoritas;
+    }
+
+    public void agregarPizza(Long id){
+        pizzasFavoritas.add(id);
+    }
 }

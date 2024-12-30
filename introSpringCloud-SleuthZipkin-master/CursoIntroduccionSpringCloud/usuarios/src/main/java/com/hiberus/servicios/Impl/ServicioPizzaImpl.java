@@ -6,6 +6,7 @@ import com.hiberus.servicios.ServicioPizza;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -16,7 +17,8 @@ import java.util.List;
 @Slf4j
 public class ServicioPizzaImpl implements ServicioPizza {
 
-    private final ClientePizza clientePizza;
+    @Autowired
+    private ClientePizza clientePizza;
 
     @CircuitBreaker(name = "pizza", fallbackMethod = "fallBackObtenerPizzasId")
     @Override
