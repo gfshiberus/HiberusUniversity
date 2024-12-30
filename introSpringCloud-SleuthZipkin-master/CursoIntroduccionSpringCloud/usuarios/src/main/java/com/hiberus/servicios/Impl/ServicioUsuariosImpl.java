@@ -26,11 +26,17 @@ public class ServicioUsuariosImpl implements ServicioUsuarios {
     @Autowired
     private ClientePizza clientePizza;
 
+    @Autowired
+    private UsuarioMapper usuarioMapper;
 
     @Override
     public UsuarioDto obtenerUsuarioPorId(Long id) {
-        // Implementación para obtener un usuario por ID
-        return null;
+        // Buscar al usuario por ID
+        Usuario usuario = repositorioUsuario.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Usuario no encontrado"));
+
+        // Mapear el usuario a UsuarioDto
+        return usuarioMapper.toDto(usuario);
     }
 
     @Override
@@ -50,14 +56,24 @@ public class ServicioUsuariosImpl implements ServicioUsuarios {
         usuario = repositorioUsuario.save(usuario);
 
         // Retornamos el UsuarioDto con los datos del usuario creado
-        return mapearUsuarioADto(usuario);
+        return usuarioMapper.toDto(usuario);
     }
 
-    @Override
-    public UsuarioDto actualizarUsuario(Long id, UsuarioDto usuarioDto) {
-        // Implementación para actualizar el usuario
-        return null;
+    public UsuarioDto actualizarUsuario(Long id, String nombre) {
+        // Buscar al usuario existente
+        Usuario usuarioExistente = repositorioUsuario.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Usuario no encontrado"));
+
+        // Actualizar únicamente el nombre
+        usuarioExistente.setNombre(nombre);
+
+        // Guardar los cambios
+        Usuario usuarioActualizado = repositorioUsuario.save(usuarioExistente);
+
+        // Mapear el usuario actualizado a UsuarioDto
+        return usuarioMapper.toDto(usuarioActualizado);
     }
+
 
 
     public UsuarioDto agregarPizzaFavorita(Long idUsuario, Long idPizza) {
@@ -72,7 +88,7 @@ public class ServicioUsuariosImpl implements ServicioUsuarios {
         Usuario usuarioActualizado = repositorioUsuario.save(usuario);
 
         // Mapear el Usuario actualizado a un UsuarioDto
-        return mapearUsuarioADto(usuarioActualizado);
+        return usuarioMapper.toDto(usuarioActualizado);
     }
 
     public UsuarioDto eliminarPizzaFavorita(Long idUsuario, Long idPizza) {
@@ -92,7 +108,7 @@ public class ServicioUsuariosImpl implements ServicioUsuarios {
         Usuario usuarioActualizado = repositorioUsuario.save(usuario);
 
         // Mapear el Usuario actualizado a un UsuarioDto
-        return mapearUsuarioADto(usuarioActualizado);
+        return usuarioMapper.toDto(usuarioActualizado);
     }
 
     @Override
@@ -114,14 +130,5 @@ public class ServicioUsuariosImpl implements ServicioUsuarios {
                 )).collect(Collectors.toList());
     }
 
-
-    private UsuarioDto mapearUsuarioADto(Usuario usuario) {
-        // Obtener directamente la lista de IDs de pizzas favoritas
-        List<Long> idsPizzasFavoritas = usuario.getPizzasFavoritas() != null
-                ? new ArrayList<>(usuario.getPizzasFavoritas()) // Clonar la lista para evitar mutaciones accidentales
-                : new ArrayList<>();
-
-        return new UsuarioDto(usuario.getId(), usuario.getNombre(), idsPizzasFavoritas);
-    }
 
 }

@@ -57,8 +57,17 @@ public class ControladorUsuario {
 
 
     @PutMapping("/{id}")
-    public ResponseEntity<UsuarioDto> actualizarUsuario(@PathVariable Long id, @RequestBody UsuarioDto usuarioDto) {
-        return ResponseEntity.ok(servicioUsuarios.actualizarUsuario(id, usuarioDto));
+    public ResponseEntity<UsuarioDto> actualizarUsuario(@PathVariable Long id, @RequestParam String nombre) {
+        try {
+            // Llamar al servicio para actualizar el usuario
+            UsuarioDto usuarioActualizado = servicioUsuarios.actualizarUsuario(id, nombre);
+
+            // Retornar el usuario actualizado con un código de estado 200 OK
+            return ResponseEntity.ok(usuarioActualizado);
+        } catch (NoSuchElementException e) {
+            // Si no se encuentra el usuario, devolver 404 Not Found
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @DeleteMapping("/{id}")

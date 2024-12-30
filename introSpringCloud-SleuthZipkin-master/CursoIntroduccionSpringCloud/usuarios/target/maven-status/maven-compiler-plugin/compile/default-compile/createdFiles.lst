@@ -7,6 +7,7 @@ com\hiberus\modelos\Usuario.class
 com\hiberus\servicios\ServicioUsuarios.class
 com\hiberus\servicios\ServicioPizza.class
 com\hiberus\dto\UsuarioDto.class
+com\hiberus\Mapper\UsuarioMapperImpl.class
 com\hiberus\ApplicationUsuarios.class
 com\hiberus\servicios\Impl\ServicioPizzaImpl.class
 com\hiberus\repositorios\RepositorioUsuario.class

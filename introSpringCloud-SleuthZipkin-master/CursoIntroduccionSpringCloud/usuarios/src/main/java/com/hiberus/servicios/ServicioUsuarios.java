@@ -13,13 +13,11 @@ public interface ServicioUsuarios {
 
     UsuarioDto crearUsuario(Long idUsuario, String nombre);  // Crear un nuevo usuario
 
-    UsuarioDto actualizarUsuario(Long id, UsuarioDto usuarioDto);  // Actualizar un usuario
-
-    void eliminarUsuario(Long id);  // Eliminar un usuario
-
-
+    UsuarioDto actualizarUsuario(Long id, String nombre);  // Actualizar un usuario
 
     UsuarioDto agregarPizzaFavorita(Long idUsuario, Long idPizza);
 
     UsuarioDto eliminarPizzaFavorita(Long idUsuario, Long idPizza);
+
+    void eliminarUsuario(Long id);  // Eliminar un usuario
 }
