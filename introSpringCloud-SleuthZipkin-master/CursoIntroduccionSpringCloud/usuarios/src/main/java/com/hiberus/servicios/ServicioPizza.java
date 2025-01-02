@@ -5,5 +5,4 @@ import java.util.List;
 
 public interface ServicioPizza {
     List<PizzaDto> obtenerPizzasId(Long idUsuario);
-
 }

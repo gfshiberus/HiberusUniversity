@@ -56,4 +56,5 @@ public class ServicioPizzaImpl implements ServicioPizza {
         log.error("Error al obtener pizzas favoritas para el usuario {}: {}", idUsuario, throwable.getMessage());
         return new ArrayList<>();  // Retorna una lista vacía en caso de fallo
     }
+
 }

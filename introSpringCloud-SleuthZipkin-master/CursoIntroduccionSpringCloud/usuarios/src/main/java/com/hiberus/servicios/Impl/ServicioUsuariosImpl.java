@@ -3,12 +3,15 @@ package com.hiberus.servicios.Impl;
 import com.hiberus.Mapper.UsuarioMapper;
 import com.hiberus.clientes.ClientePizza;
 import com.hiberus.dto.PizzaDto;
+import com.hiberus.dto.UsuarioCrearDto;
 import com.hiberus.dto.UsuarioDto;
 import com.hiberus.modelos.Usuario;
 import com.hiberus.repositorios.RepositorioUsuario;
+import com.hiberus.servicios.ServicioPizza;
 import com.hiberus.servicios.ServicioUsuarios;
 import feign.FeignException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -29,6 +32,9 @@ public class ServicioUsuariosImpl implements ServicioUsuarios {
     @Autowired
     private UsuarioMapper usuarioMapper;
 
+    @Autowired
+    private ServicioPizza servicioPizza;
+
     @Override
     public UsuarioDto obtenerUsuarioPorId(Long id) {
         // Buscar al usuario por ID
@@ -40,23 +46,18 @@ public class ServicioUsuariosImpl implements ServicioUsuarios {
     }
 
     @Override
-    public UsuarioDto crearUsuario(Long idUsuario, String nombre) {
-        // Verificar si ya existe un usuario con el mismo id
-        if (repositorioUsuario.existsById(idUsuario)) {
-            throw new RuntimeException("Ya existe un usuario con el ID proporcionado");
-        }
-
-
-        // Crear un nuevo usuario con el id y nombre proporcionados
+    public UsuarioDto crearUsuario(UsuarioCrearDto usuarioCrearDto) {
+        // Crear usuario basado en los datos recibidos del DTO
         Usuario usuario = new Usuario();
-        usuario.setId(idUsuario);  // Establecemos el ID recibido
-        usuario.setNombre(nombre);  // Establecemos el nombre recibido
+        usuario.setId(usuarioCrearDto.getId());
+        usuario.setNombre(usuarioCrearDto.getNombre());
+        // Asignar otros atributos del usuario si es necesario
 
-        // Guardamos el usuario
-        usuario = repositorioUsuario.save(usuario);
+        // Guardar el usuario en la base de datos
+        Usuario usuarioGuardado = repositorioUsuario.save(usuario);
 
-        // Retornamos el UsuarioDto con los datos del usuario creado
-        return usuarioMapper.toDto(usuario);
+        // Retornar el usuario guardado como UsuarioDto
+        return usuarioMapper.toDto(usuarioGuardado);
     }
 
     public UsuarioDto actualizarUsuario(Long id, String nombre) {
@@ -77,9 +78,11 @@ public class ServicioUsuariosImpl implements ServicioUsuarios {
 
 
     public UsuarioDto agregarPizzaFavorita(Long idUsuario, Long idPizza) {
+
         // Buscar al usuario
         Usuario usuario = repositorioUsuario.findById(idUsuario)
                 .orElseThrow(() -> new NoSuchElementException("Usuario no encontrado"));
+
 
         // Agregar la pizza al usuario
         usuario.agregarPizza(idPizza);

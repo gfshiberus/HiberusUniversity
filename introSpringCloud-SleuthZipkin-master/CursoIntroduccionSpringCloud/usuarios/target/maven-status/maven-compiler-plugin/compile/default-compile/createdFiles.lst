@@ -13,5 +13,7 @@ com\hiberus\servicios\Impl\ServicioPizzaImpl.class
 com\hiberus\repositorios\RepositorioUsuario.class
 com\hiberus\controladores\ControladorUsuario.class
 com\hiberus\config\ConfigSwagger.class
+com\hiberus\dto\UsuarioCrearDto$UsuarioCrearDtoBuilder.class
+com\hiberus\dto\UsuarioCrearDto.class
 com\hiberus\dto\UsuarioDto$UsuarioDtoBuilder.class
 com\hiberus\dto\PizzaDto.class

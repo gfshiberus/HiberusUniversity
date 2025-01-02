@@ -1,6 +1,7 @@
 package com.hiberus.controladores;
 
 import com.hiberus.dto.PizzaDto;
+import com.hiberus.dto.UsuarioCrearDto;
 import com.hiberus.dto.UsuarioDto;
 import com.hiberus.modelos.Usuario;
 import com.hiberus.servicios.ServicioPizza;
@@ -32,9 +33,9 @@ public class ControladorUsuario {
     }
 
     @PostMapping
-    public ResponseEntity<UsuarioDto> crearUsuario(@RequestBody UsuarioDto usuarioDto) {
-        UsuarioDto nuevoUsuario = servicioUsuarios.crearUsuario(usuarioDto.getId(),usuarioDto.getNombre());
-        return ResponseEntity.status(HttpStatus.CREATED).body(nuevoUsuario); // Código 201
+    public ResponseEntity<UsuarioDto> crearUsuario(@RequestBody UsuarioCrearDto usuarioCrearDto) {
+        UsuarioDto usuarioCreado = servicioUsuarios.crearUsuario(usuarioCrearDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(usuarioCreado);
     }
 
     @PutMapping("/{idUsuario}/agregarPizzaFavorita/{idPizza}")

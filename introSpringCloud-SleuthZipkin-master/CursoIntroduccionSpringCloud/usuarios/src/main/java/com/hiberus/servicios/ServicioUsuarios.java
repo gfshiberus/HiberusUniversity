@@ -1,5 +1,6 @@
 package com.hiberus.servicios;
 
+import com.hiberus.dto.UsuarioCrearDto;
 import com.hiberus.dto.UsuarioDto;
 import com.hiberus.modelos.Usuario;
 
@@ -11,7 +12,7 @@ public interface ServicioUsuarios {
 
     UsuarioDto obtenerUsuarioPorId(Long id);  // Obtener un usuario por su ID
 
-    UsuarioDto crearUsuario(Long idUsuario, String nombre);  // Crear un nuevo usuario
+    UsuarioDto crearUsuario(UsuarioCrearDto usuarioCrearDto);  // Crear un nuevo usuario
 
     UsuarioDto actualizarUsuario(Long id, String nombre);  // Actualizar un usuario
 
