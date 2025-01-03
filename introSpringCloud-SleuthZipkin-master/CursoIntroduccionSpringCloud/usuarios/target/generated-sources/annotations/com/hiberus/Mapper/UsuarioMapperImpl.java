@@ -1,4 +1,4 @@
-package com.hiberus.Mapper;
+package com.hiberus.mapper;
 
 import com.hiberus.dto.UsuarioDto;
 import com.hiberus.modelos.Usuario;
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-12-31T12:44:35-0300",
+    date = "2025-01-03T17:40:36-0300",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17.0.7 (Oracle Corporation)"
 )
 @Component

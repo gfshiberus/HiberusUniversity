@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 public interface ServicioPizzaWrite {
 
     PizzaWriteDTO crearPizza(String nombre);
-    PizzaWriteDTO actualizarPizza(Long id, PizzaWriteDTO pizzaWriteDTO);
+    PizzaWriteDTO actualizarPizza(Long id, String nombre);
 
     void eliminarPizza(Long id);
 }

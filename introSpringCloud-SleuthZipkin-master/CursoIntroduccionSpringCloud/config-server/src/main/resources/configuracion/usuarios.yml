@@ -46,5 +46,5 @@ resilience4j:
         writable-stack-trace-enabled: true #Logs por consola
         automatic-transition-from-open-to-half-open-enabled: true
     instances:
-      prendas:
+      pizza-read:
         base-config: shared

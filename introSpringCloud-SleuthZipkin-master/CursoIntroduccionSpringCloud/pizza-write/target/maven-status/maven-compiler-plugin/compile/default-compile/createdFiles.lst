@@ -8,3 +8,4 @@ com\hiberus\dto\PizzaWriteDTO.class
 com\hiberus\ApplicationPizzaWrite.class
 com\hiberus\modelos\Pizza$PizzaBuilder.class
 com\hiberus\config\ConfigSwagger.class
+com\hiberus\excepciones\GlobalExceptionHandler.class

@@ -21,8 +21,9 @@ public class ControladorPizzaWrite {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<PizzaWriteDTO> actualizarPizza(@PathVariable Long id, @RequestBody PizzaWriteDTO pizzaWriteDTO) {
-        return new ResponseEntity<>(servicioPizzaWrite.actualizarPizza(id, pizzaWriteDTO), HttpStatus.OK);
+    public ResponseEntity<PizzaWriteDTO> actualizarPizza(@PathVariable Long id, @RequestParam String nombre) {
+        PizzaWriteDTO pizzaActualizada = servicioPizzaWrite.actualizarPizza(id, nombre);
+        return ResponseEntity.ok(pizzaActualizada);
     }
 
     @DeleteMapping("/{id}")

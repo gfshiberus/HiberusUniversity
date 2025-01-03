@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,7 +30,7 @@ public class ServicioPizzaImpl implements ServicioPizzaRead {
     @Override
     public PizzaReadDTO obtenerPizzaPorId(Long id) {
         Pizza pizza = repositorioPizza.findById(id)
-                .orElseThrow(() -> new RuntimeException("Pizza no encontrada"));
+                .orElseThrow(() -> new NoSuchElementException("Pizza no encontrada"));
 
         return new PizzaReadDTO(pizza.getId(), pizza.getNombre());
     }

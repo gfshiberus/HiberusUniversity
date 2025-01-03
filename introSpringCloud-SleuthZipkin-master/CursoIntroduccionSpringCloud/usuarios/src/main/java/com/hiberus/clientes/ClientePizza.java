@@ -15,7 +15,6 @@ public interface ClientePizza {
 
     @GetMapping("/pizzas/read/{id}")
     PizzaDto obtenerPizzaPorId(@PathVariable Long id);
-
 }
 
 

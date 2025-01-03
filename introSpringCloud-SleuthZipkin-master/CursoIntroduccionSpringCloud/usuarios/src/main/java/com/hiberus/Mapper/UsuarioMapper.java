@@ -1,4 +1,4 @@
-package com.hiberus.Mapper;
+package com.hiberus.mapper;
 
 import com.hiberus.dto.UsuarioDto;
 import com.hiberus.modelos.Usuario;

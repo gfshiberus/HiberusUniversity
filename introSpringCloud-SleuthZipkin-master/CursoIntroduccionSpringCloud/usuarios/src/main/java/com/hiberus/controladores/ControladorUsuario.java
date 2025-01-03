@@ -40,21 +40,12 @@ public class ControladorUsuario {
 
     @PutMapping("/{idUsuario}/agregarPizzaFavorita/{idPizza}")
     public ResponseEntity<UsuarioDto> agregarPizzaFavorita(@PathVariable Long idUsuario, @PathVariable Long idPizza) {
-        try {
-            // Llamar al servicio para agregar la pizza favorita
-            UsuarioDto usuarioActualizado = servicioUsuarios.agregarPizzaFavorita(idUsuario, idPizza);
+        // Llamar al servicio para agregar la pizza favorita
+        UsuarioDto usuarioActualizado = servicioUsuarios.agregarPizzaFavorita(idUsuario, idPizza);
 
-            // Retornar el usuario actualizado con código de estado 200 (OK)
-            return ResponseEntity.ok(usuarioActualizado);
-        } catch (NoSuchElementException e) {
-            // Manejar el caso en que no se encuentre el usuario
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        } catch (Exception e) {
-            // Manejar cualquier otro tipo de error
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+        // Retornar el usuario actualizado con código de estado 200 (OK)
+        return ResponseEntity.ok(usuarioActualizado);
     }
-
 
 
     @PutMapping("/{id}")
@@ -79,12 +70,8 @@ public class ControladorUsuario {
 
     @PutMapping("/{idUsuario}/eliminarPizzaFavoritas/{idPizza}")
     public ResponseEntity<UsuarioDto> eliminarPizzaFavorita(@PathVariable Long idUsuario, @PathVariable Long idPizza) {
-        try {
-            UsuarioDto usuarioActualizado = servicioUsuarios.eliminarPizzaFavorita(idUsuario, idPizza);
-            return ResponseEntity.ok(usuarioActualizado);
-        } catch (NoSuchElementException e) {
-            return ResponseEntity.notFound().build();  // Si la pizza no estaba en las favoritas
-        }
+        UsuarioDto usuarioActualizado = servicioUsuarios.eliminarPizzaFavorita(idUsuario, idPizza);
+        return ResponseEntity.ok(usuarioActualizado);
     }
 
 

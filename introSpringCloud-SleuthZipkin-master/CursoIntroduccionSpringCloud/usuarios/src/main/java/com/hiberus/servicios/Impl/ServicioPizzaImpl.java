@@ -9,8 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collections;
+import java.util.NoSuchElementException;
 
 @Service("feign-pizza")
 @AllArgsConstructor
@@ -20,41 +20,18 @@ public class ServicioPizzaImpl implements ServicioPizza {
     @Autowired
     private ClientePizza clientePizza;
 
-    @CircuitBreaker(name = "pizza", fallbackMethod = "fallBackObtenerPizzasId")
+    // Este método maneja el Circuit Breaker de Resilience4j
     @Override
-    public List<PizzaDto> obtenerPizzasId(Long idUsuario) {
-        // En lugar de esperar que clientePizza.obtenerPizzaPorId devuelva una lista,
-        // lo iteramos por cada ID de pizza asociado al usuario.
-        List<PizzaDto> pizzasFavoritas = new ArrayList<>();
-
-        // Aquí asumimos que idUsuario tiene las pizzas favoritas en su lista (debe venir desde otro servicio o la base de datos)
-        List<Long> pizzaIds = obtenerPizzaIdsPorUsuario(idUsuario);
-
-        // Llamar al microservicio de pizza para obtener cada pizza por ID
-        for (Long pizzaId : pizzaIds) {
-            try {
-                PizzaDto pizzaDto = clientePizza.obtenerPizzaPorId(pizzaId);
-                pizzasFavoritas.add(pizzaDto);
-            } catch (Exception e) {
-                log.error("Error obteniendo pizza con ID {}: {}", pizzaId, e.getMessage());
-                // Puede agregar un fallback aquí, pero el fallback también podría devolver una lista vacía si no se encuentran pizzas
-            }
-        }
-
-        return pizzasFavoritas;
+    @CircuitBreaker(name = "pizza-read", fallbackMethod = "obtenerPizzaFallback")
+    public PizzaDto obtenerPizzaPorId(Long id) {
+        // Llamada al Feign Client para obtener la pizza
+        return clientePizza.obtenerPizzaPorId(id);
     }
 
-    private List<Long> obtenerPizzaIdsPorUsuario(Long idUsuario) {
-        // Esta es una función simulada para obtener los IDs de las pizzas de un usuario.
-        // En un escenario real, necesitarías obtener estos IDs desde la base de datos o el microservicio de usuarios.
-        // Aquí debes implementar la lógica para obtener los IDs de pizzas asociadas al usuario
-        return List.of(1L, 2L, 3L);  // Ejemplo con IDs fijos
-    }
-
-    // Fallback en caso de error con el servicio de pizzas
-    private List<PizzaDto> fallBackObtenerPizzasId(Long idUsuario, Throwable throwable) {
-        log.error("Error al obtener pizzas favoritas para el usuario {}: {}", idUsuario, throwable.getMessage());
-        return new ArrayList<>();  // Retorna una lista vacía en caso de fallo
+    // Método fallback que se ejecuta cuando el Circuit Breaker se abre o el servicio falla
+    public PizzaDto obtenerPizzaFallback(Long id, Throwable throwable) {
+        // Suponiendo que el constructor correcto es uno que solo toma un id y un nombre
+        throw new NoSuchElementException("La pizza con ID " + id + " no existe o no está disponible.");
     }
 
 }

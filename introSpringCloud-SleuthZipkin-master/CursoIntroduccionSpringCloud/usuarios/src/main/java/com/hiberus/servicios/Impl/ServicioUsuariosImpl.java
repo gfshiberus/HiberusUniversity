@@ -1,24 +1,19 @@
 package com.hiberus.servicios.Impl;
 
-import com.hiberus.Mapper.UsuarioMapper;
-import com.hiberus.clientes.ClientePizza;
 import com.hiberus.dto.PizzaDto;
+import com.hiberus.mapper.UsuarioMapper;
+import com.hiberus.clientes.ClientePizza;
 import com.hiberus.dto.UsuarioCrearDto;
 import com.hiberus.dto.UsuarioDto;
 import com.hiberus.modelos.Usuario;
 import com.hiberus.repositorios.RepositorioUsuario;
 import com.hiberus.servicios.ServicioPizza;
 import com.hiberus.servicios.ServicioUsuarios;
-import feign.FeignException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -47,6 +42,9 @@ public class ServicioUsuariosImpl implements ServicioUsuarios {
 
     @Override
     public UsuarioDto crearUsuario(UsuarioCrearDto usuarioCrearDto) {
+        if (usuarioCrearDto.getId() != null && repositorioUsuario.existsById(usuarioCrearDto.getId())) {
+            throw new IllegalArgumentException("Ya existe un usuario con el ID " + usuarioCrearDto.getId());
+        }
         // Crear usuario basado en los datos recibidos del DTO
         Usuario usuario = new Usuario();
         usuario.setId(usuarioCrearDto.getId());
@@ -83,6 +81,14 @@ public class ServicioUsuariosImpl implements ServicioUsuarios {
         Usuario usuario = repositorioUsuario.findById(idUsuario)
                 .orElseThrow(() -> new NoSuchElementException("Usuario no encontrado"));
 
+        // Validar si la pizza ya está en la lista de favoritas
+        if (usuario.getPizzasFavoritas().contains(idPizza)) {
+            throw new IllegalArgumentException("La pizza con ID " + idPizza + " ya está en la lista de favoritas.");
+        }
+
+        // Validar si la pizza es válida utilizando el servicio de Pizza con Circuit Breaker
+        PizzaDto pizzaDto = servicioPizza.obtenerPizzaPorId(idPizza); // Esta llamada será gestionada por el circuit breaker
+
 
         // Agregar la pizza al usuario
         usuario.agregarPizza(idPizza);
@@ -117,7 +123,7 @@ public class ServicioUsuariosImpl implements ServicioUsuarios {
     @Override
     public void eliminarUsuario(Long id) {
         if (!repositorioUsuario.existsById(id)) {
-            throw new RuntimeException("Usuario no encontrado");
+            throw new NoSuchElementException("Usuario no encontrado");
         }
         repositorioUsuario.deleteById(id);
     }

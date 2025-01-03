@@ -7,6 +7,8 @@ import com.hiberus.servicios.ServicioPizzaWrite;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.NoSuchElementException;
+
 @Service
 public class ServicioPizzaImpl implements ServicioPizzaWrite {
 
@@ -14,8 +16,11 @@ public class ServicioPizzaImpl implements ServicioPizzaWrite {
     private RepositorioPizza repositorioPizza;
 
     public PizzaWriteDTO crearPizza(String nombre) {
-        if (nombre == null || nombre.isBlank()) {
-            throw new IllegalArgumentException("El nombre de la pizza no puede estar vacío");
+        // Verificar si ya existe una pizza con el mismo nombre
+        boolean pizzaExistente = repositorioPizza.existsByNombre(nombre);  // Asumimos que tienes este método en tu repositorio
+
+        if (pizzaExistente) {
+            throw new IllegalArgumentException("Ya existe una pizza con el nombre: " + nombre);
         }
 
         Pizza pizza = new Pizza();
@@ -31,19 +36,25 @@ public class ServicioPizzaImpl implements ServicioPizzaWrite {
     }
 
     @Override
-    public PizzaWriteDTO actualizarPizza(Long id, PizzaWriteDTO pizzaWriteDTO) {
+    public PizzaWriteDTO actualizarPizza(Long id, String nombre) {
         Pizza pizza = repositorioPizza.findById(id)
-                .orElseThrow(() -> new RuntimeException("Pizza no encontrada"));
-        pizza.setNombre(pizzaWriteDTO.getNombre());
-        repositorioPizza.save(pizza);
+                .orElseThrow(() -> new NoSuchElementException("Pizza no encontrada"));
 
-        return pizzaWriteDTO;
+        pizza.setNombre(nombre);
+
+        pizza = repositorioPizza.save(pizza);
+
+        PizzaWriteDTO dto = new PizzaWriteDTO();
+        dto.setId(pizza.getId());
+        dto.setNombre(pizza.getNombre());
+
+        return dto;
     }
 
     @Override
     public void eliminarPizza(Long id) {
         Pizza pizza = repositorioPizza.findById(id)
-                .orElseThrow(() -> new RuntimeException("Pizza no encontrada"));
+                .orElseThrow(() -> new NoSuchElementException("Pizza no encontrada"));
         repositorioPizza.delete(pizza);
     }
 }

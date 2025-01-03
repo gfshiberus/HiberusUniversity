@@ -8,4 +8,5 @@ import java.util.List;
 
 @Repository
 public interface RepositorioPizza extends JpaRepository<Pizza,Long> {
+    boolean existsByNombre(String nombre);
 }
